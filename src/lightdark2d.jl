@@ -1,7 +1,11 @@
 
+using MCTS
+export RandomGaussianLD2 #rlee: added
+
 const Vec2 = SVector{2,Float64}
 
-abstract type AbstractLD2 <: POMDP{Vec2, Vec2, Vec2} end
+#abstract type AbstractLD2 <: POMDP{Vec2, Vec2, Vec2} end
+abstract type AbstractLD2 <: MDP{Vec2, Vec2} end #rlee: changed
 
 """
 2-Dimensional light-dark problem
@@ -45,6 +49,14 @@ initial_state_distribution(p::AbstractLD2) = p.init_dist
 reward(p::AbstractLD2, s::Vec2, a::Vec2, sp::Vec2) = -(dot(s, p.Q*s) + dot(a, p.R*a))
 discount(p::AbstractLD2) = p.discount
 
+#rlee: added
+initial_state(p::LightDark2D, rng::AbstractRNG) = p.init_dist.mean
+struct RandomGaussianLD2 <: Policy
+    rng::AbstractRNG
+end
+MCTS.next_action(pol::RandomGaussianLD2, mdp::LightDark2D, s, snode) = action(pol, s)
+POMDPs.action(pol::RandomGaussianLD2, s) = Vec2(0.0,0.0) .+ Vec2(0.5,0.5).*Vec2(randn(pol.rng,2))
+### rlee: added
 
 immutable SymmetricNormal2
     mean::Vec2
