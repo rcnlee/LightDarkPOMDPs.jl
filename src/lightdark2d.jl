@@ -48,6 +48,7 @@ isterminal(p::AbstractLD2, s::Vec2) = norm(s) <= p.term_radius
 initial_state_distribution(p::AbstractLD2) = p.init_dist
 reward(p::AbstractLD2, s::Vec2, a::Vec2, sp::Vec2) = -(dot(s, p.Q*s) + dot(a, p.R*a))
 discount(p::AbstractLD2) = p.discount
+action_type(p::AbstractLD2) = Vec2 #rlee added
 
 #rlee: added
 initial_state(p::LightDark2D, rng::AbstractRNG) = p.init_dist.mean
